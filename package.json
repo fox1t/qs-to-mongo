@@ -1,0 +1,62 @@
+{
+  "name": "qs-to-mongo",
+  "version": "0.1.0",
+  "description": "Convert query string parameters into mongo query filter and options.",
+  "main": "./lib",
+  "types": "./lib",
+  "author": "Maksim Sinik <maksim@sinik.it>",
+  "license": "MIT",
+  "scripts": {
+    "prebuild": "npm run lint && npm run clean-build",
+    "build": "tsc",
+    "clean-build": "rimraf ./lib && mkdir lib",
+    "update": "npx npm-check -u",
+    "prettier": "prettier --loglevel warn --write \"src/**/*.{ts,tsx}\"",
+    "prelint": "npm run prettier",
+    "lint": "tslint --fix -c tslint.json -t stylish -p ./tsconfig.json",
+    "prepublishOnly": "npm run build",
+    "test": "tap test/**/*.ts",
+    "test:watch": "chokidar \"src/**/*.ts\" \"test/**/*.ts\" -c \"npm run test\" --initial",
+    "test:report": "npm run test | tee out.tap",
+    "test:reporter": "tap-mocha-reporter xunit < out.tap > junit-testresults.xml"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com:fox1t/qs-to-mongo.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/fox1t/qs-to-mongo/issues"
+  },
+  "homepage": "https://github.com/fox1t/qs-to-mongo#readme",
+  "devDependencies": {
+    "@types/node": "~11.13.8",
+    "@types/qs": "~6.5.3",
+    "chokidar-cli": "~1.2.2",
+    "husky": "~2.1.0",
+    "prettier": "~1.17.0",
+    "rimraf": "~2.6.3",
+    "tap": "~13.1.1",
+    "tap-mocha-reporter": "~4.0.1",
+    "ts-node": "~8.1.0",
+    "tslint": "~5.16.0",
+    "tslint-config-prettier": "~1.18.0",
+    "typescript": "~3.4.5"
+  },
+  "files": [
+    "/lib",
+    "/typings"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run test && npm run build"
+    }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "bson-objectid": "~1.2.4",
+    "qs": "~6.7.0"
+  }
+}
