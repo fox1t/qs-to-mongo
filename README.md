@@ -1,4 +1,6 @@
 # qs-to-mongo
+[![Build Status](https://dev.azure.com/sinik/qs-to-mongo/_apis/build/status/fox1t.qs-to-mongo?branchName=master)](https://dev.azure.com/sinik/qs-to-mongo/_build/latest?definitionId=1&branchName=master)
+
 With this package you can parse and convert query parameters into [MongoDB](https://www.mongodb.com/) query criteria and options.
 
 ## Install
