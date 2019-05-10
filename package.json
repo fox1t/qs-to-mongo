@@ -24,7 +24,18 @@
     "type": "git",
     "url": "git+https://github.com:fox1t/qs-to-mongo.git"
   },
-  "keywords": [],
+  "keywords": [
+    "querystring",
+    "qs",
+    "query",
+    "url",
+    "parse",
+    "filter",
+    "options",
+    "criteria",
+    "search",
+    "MongoDB"
+  ],
   "bugs": {
     "url": "https://github.com/fox1t/qs-to-mongo/issues"
   },
