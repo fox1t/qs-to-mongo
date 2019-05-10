@@ -19,7 +19,7 @@ interface Options {
   parserOptions?: any
   dateFields?: string | string[]
   objectIdFields?: string | string[]
-  parameters?: typeof defaultParameters
+  parameters?: Partial<typeof defaultParameters>
   maxLimit?: number
 }
 
