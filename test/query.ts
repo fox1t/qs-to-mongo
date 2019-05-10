@@ -307,7 +307,7 @@ test('query parsing', function(t) {
       })
       t3.test('should ignore criteria', function(t4) {
         const results = qs2m('field=value&envelope=true&&offset=0&limit=10&fields=id&sort=name', {
-          ignore: ['envelope'],
+          ignoredFields: ['envelope'],
         })
         t4.ok(results.criteria)
         t4.notOk(results.criteria.envelope, 'envelope')
@@ -325,13 +325,13 @@ test('query parsing', function(t) {
         t4.end()
       })
       t3.test('should create $exists true criteria', function(t4) {
-        const results = qs2m('a&b=10&c', { ignore: ['c'] })
+        const results = qs2m('a&b=10&c', { ignoredFields: ['c'] })
         t4.ok(results.criteria)
         t4.deepEqual(results.criteria, { a: { $exists: true }, b: 10 })
         t4.end()
       })
       t3.test('should create $exists false criteria', function(t4) {
-        const results = qs2m('!a&b=10&c', { ignore: ['c'] })
+        const results = qs2m('!a&b=10&c', { ignoredFields: ['c'] })
         t4.ok(results.criteria)
         t4.deepEqual(results.criteria, { a: { $exists: false }, b: 10 })
         t4.end()
@@ -508,7 +508,7 @@ test('query parsing', function(t) {
       })
       // can't create comparisons for embedded documents
       t3.test("shouldn't ignore deep criteria", function(t4) {
-        const results = qs2m('field=value&foo[envelope]=true', { ignore: ['envelope'] })
+        const results = qs2m('field=value&foo[envelope]=true', { ignoredFields: ['envelope'] })
         t4.ok(results.criteria)
         t4.deepEqual(results.criteria, { field: 'value', foo: { envelope: true } })
         t4.end()
