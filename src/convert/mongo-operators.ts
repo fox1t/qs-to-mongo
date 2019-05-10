@@ -21,7 +21,7 @@ export function convertToMongoOperators(
 ) {
   const join = value === '' ? key : key.concat('=', value)
   const parts = join.match(/^(!?[^><!=:]+)(?:=?([><]=?|!?=|:.+=)(.+))?$/)
-  const hash: { key: string; value: any } = {} as any
+  const fieldQueryCriteria: { key: string; value: any } = {} as any
   let parseDate = false
   let parseObjectId = false
   let op
@@ -68,10 +68,7 @@ export function convertToMongoOperators(
     }
   } else if (op[0] === ':' && op[op.length - 1] === '=') {
     op = '$' + op.substr(1, op.length - 2)
-    const array: any[] = []
-    parts[3].split(',').forEach(function(val) {
-      array.push(getTypedValue(val, { parseDate, parseObjectId }))
-    })
+    const array = parts[3].split(',').map(val => getTypedValue(val, { parseDate, parseObjectId }))
     value = {}
     value[op] = array.length === 1 ? array[0] : array
   } else {
@@ -87,7 +84,7 @@ export function convertToMongoOperators(
     }
   }
 
-  hash.key = key
-  hash.value = value
-  return hash
+  fieldQueryCriteria.key = key
+  fieldQueryCriteria.value = value
+  return fieldQueryCriteria
 }

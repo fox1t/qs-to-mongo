@@ -8,6 +8,7 @@ const defaultParameters = {
   sort: 'sort',
   offset: 'offset',
   limit: 'limit',
+  q: 'q',
 }
 
 interface Options {
@@ -19,6 +20,7 @@ interface Options {
   parserOptions?: any
   dateFields?: string | string[]
   objectIdFields?: string | string[]
+  fullTextFields?: string | string[]
   parameters?: Partial<typeof defaultParameters>
   maxLimit?: number
 }
@@ -26,7 +28,7 @@ interface Options {
 function qsToMongo(query: string, options: Options = {}) {
   const { parser = qs, parserOptions, ignoredFields = [], maxLimit } = options
 
-  let { dateFields, objectIdFields } = options
+  let { dateFields, objectIdFields, fullTextFields } = options
   const parameters = { ...defaultParameters, ...options.parameters }
 
   const queryString: { [key: string]: any } =
@@ -38,11 +40,18 @@ function qsToMongo(query: string, options: Options = {}) {
 
   dateFields = typeof dateFields === 'string' ? [dateFields] : dateFields
   objectIdFields = typeof objectIdFields === 'string' ? [objectIdFields] : objectIdFields
+  fullTextFields = typeof fullTextFields === 'string' ? [fullTextFields] : fullTextFields
 
   const parsedOptions = parseQueryOptions(queryString, { maxLimit, parameters })
 
   return {
-    criteria: queryCriteriaToMongo(queryString, { dateFields, ignore, objectIdFields }),
+    criteria: queryCriteriaToMongo(queryString, {
+      dateFields,
+      ignore,
+      objectIdFields,
+      fullTextFields,
+      qParameter: parameters.q,
+    }),
     options: parsedOptions,
 
     links: function(url: string, totalCount: number) {
