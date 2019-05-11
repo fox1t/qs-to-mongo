@@ -1,5 +1,17 @@
-# qs-to-mongo
+<div align="center">
+  
+![qs-to-mongo-logo-v1](https://user-images.githubusercontent.com/6388707/57569044-0f723900-73f0-11e9-8683-b28afd0b7731.png)
+
+</div>
+
+<div align="center">
+
 [![Build Status](https://dev.azure.com/sinik/qs-to-mongo/_apis/build/status/fox1t.qs-to-mongo?branchName=master)](https://dev.azure.com/sinik/qs-to-mongo/_build/latest?definitionId=1&branchName=master)
+[![NPM version](https://img.shields.io/npm/v/qs-to-mongo.svg?style=flat)](https://www.npmjs.com/package/qs-to-mongo)
+[![NPM downloads](https://img.shields.io/npm/dm/qs-to-mongo.svg?style=flat)](https://www.npmjs.com/package/qs-to-mongo)
+[![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+
+</div>
 
 With this package you can parse and convert query parameters into [MongoDB](https://www.mongodb.com/) query criteria and options.
 
