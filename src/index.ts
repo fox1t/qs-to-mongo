@@ -25,7 +25,7 @@ interface Options {
   maxLimit?: number
 }
 
-function qsToMongo(query: string, options: Options = {}) {
+function qsToMongo(query: string | object, options: Options = {}) {
   const { parser = qs, parserOptions, ignoredFields = [], maxLimit } = options
 
   let { dateFields, objectIdFields, fullTextFields } = options
