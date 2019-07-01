@@ -360,6 +360,19 @@ test('query parsing', function(t) {
         t4.deepEqual(results.criteria, { array: { $all: [50, 60] } })
         t4.end()
       })
+      t3.test('should throw on $where criteria', function(t4) {
+        t4.throws(
+          () => qs2m('array:where="while(true) {}"'),
+          'Use of the operator $where is forbidden to prevent NoSQL injections.',
+        )
+        t4.end()
+      })
+      t3.test('should create $or criteria', function(t4) {
+        const results = qs2m('array:or=foo,bar')
+        t4.ok(results.criteria)
+        t4.deepEqual(results.criteria, { $or: [{ array: 'foo' }, { array: 'bar' }] })
+        t4.end()
+      })
       t3.test('should create forced string criteria', function(t4) {
         const results = qs2m("s='a,b'")
         t4.ok(results.criteria)

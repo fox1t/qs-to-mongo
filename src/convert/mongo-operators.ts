@@ -5,6 +5,8 @@ interface Options {
   objectIdFields?: string[]
 }
 
+const operatorsBlackList = ['$where']
+
 // Convert a key/value pair split at an equals sign into a mongo comparison.
 // Converts value Strings to Numbers or Booleans when possible.
 // for example:
@@ -67,10 +69,19 @@ export function convertToMongoOperators(
       value = array[0]
     }
   } else if (op[0] === ':' && op[op.length - 1] === '=') {
+    // f('key:op','value')
     op = '$' + op.substr(1, op.length - 2)
+    if (operatorsBlackList.indexOf(op) > -1) {
+      throw new Error(`Use of the operator ${op} is forbidden to prevent NoSQL injections.`)
+    }
     const array = parts[3].split(',').map(val => getTypedValue(val, { parseDate, parseObjectId }))
-    value = {}
-    value[op] = array.length === 1 ? array[0] : array
+    if (op === '$or') {
+      value = array.length === 1 ? { [key]: array[0] } : array.map(val => ({ [key]: val }))
+      key = op
+    } else {
+      value = {}
+      value[op] = array.length === 1 ? array[0] : array
+    }
   } else {
     value = getTypedValue(parts[3], { parseDate, parseObjectId })
     if (op === '>') {
