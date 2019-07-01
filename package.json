@@ -1,6 +1,6 @@
 {
   "name": "qs-to-mongo",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Convert query string parameters into mongo query filter and options.",
   "main": "./lib",
   "types": "./lib",
