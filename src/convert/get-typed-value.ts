@@ -18,6 +18,8 @@ function isValidObjectId(id: string | ObjectId): boolean {
     : false
 }
 
+export const regexpTest = (value: string) => value.match(/^\/(.*)\/(i?)$/)
+
 // Convert String to RegExp, Number, Date, Boolean or null if possible
 // If the value is a quoted string it will just strip the quotes
 export function getTypedValue(
@@ -28,7 +30,7 @@ export function getTypedValue(
   if (value[0] === '!') {
     value = value.substr(1)
   }
-  const regex = value.match(/^\/(.*)\/(i?)$/)
+  const regex = regexpTest(value)
   const quotedString = value.match(/(["'])(?:\\\1|.)*?\1/)
 
   if (regex) {

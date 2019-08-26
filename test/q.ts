@@ -24,6 +24,7 @@ test('fulltext search parsing', function(t) {
     t2.deepEqual(results.criteria, { $or: [{ foo: 'BAZ' }, { bar: 'BAZ' }, { ncl: 'BAZ' }] })
     t2.end()
   })
+
   t.test(`should add an array of multiple text fields to q search`, function(t2) {
     const results = qs2m('q=BAZ,FOO,NCL', { fullTextFields: ['foo', 'bar', 'ncl'] })
     t2.ok(results.criteria)
@@ -40,6 +41,12 @@ test('fulltext search parsing', function(t) {
     const results = qs2m('q=/bar/i', { fullTextFields: ['foo'] })
     t2.ok(results.criteria)
     t2.deepEqual(results.criteria, { $or: [{ foo: /bar/i }] })
+    t2.end()
+  })
+  t.test(`should split spaces in RegExp and convert to muliple q search`, function(t2) {
+    const results = qs2m('q=/bar baz /i', { fullTextFields: ['foo'] })
+    t2.ok(results.criteria)
+    t2.deepEqual(results.criteria, { $or: [{ $and: [{ foo: /bar/i }, { foo: /baz/i }] }] })
     t2.end()
   })
   t.test(`should convert Date to q search`, function(t2) {

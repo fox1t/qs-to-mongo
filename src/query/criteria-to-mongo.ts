@@ -1,4 +1,5 @@
 import { convertToMongoOperators } from '../convert/mongo-operators'
+import { regexpTest } from '../convert/get-typed-value'
 
 interface Options {
   ignore?: string[]
@@ -39,7 +40,28 @@ export function queryCriteriaToMongo<T extends { [key: string]: any }>(
         }
         criteria.$or = fullTextFields
           .map(function(field) {
-            const p = convertToMongoOperators(field, query[key], { dateFields, objectIdFields })
+            const regexp = regexpTest(query[key])
+            let p
+            if (regexp && regexp[1].length) {
+              const words = regexp[1].split(' ').filter(Boolean)
+              if (words.length > 1) {
+                const andArray = words.reduce(
+                  (and, word) => {
+                    const regexpedWord = `/${word}/${regexp[2]}`
+                    const wordP = convertToMongoOperators(field, regexpedWord, {
+                      dateFields,
+                      objectIdFields,
+                    })
+                    if (wordP) {
+                      return and.concat([{ [field]: wordP.value }])
+                    }
+                  },
+                  [] as any,
+                )
+                return { $and: andArray }
+              }
+            }
+            p = convertToMongoOperators(field, query[key], { dateFields, objectIdFields })
             if (p) {
               return { [field]: p.value }
             }
