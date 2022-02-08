@@ -54,7 +54,7 @@ function qsToMongo(query: string | object, options: Options = {}) {
     }),
     options: parsedOptions,
 
-    links: function(url: string, totalCount: number) {
+    links: function (url: string, totalCount: number) {
       const offset = parsedOptions.skip || 0
       const limit = Math.min(parsedOptions.limit || 0, totalCount)
       const links: { prev: string; first: string; next: string; last: string } = {} as any

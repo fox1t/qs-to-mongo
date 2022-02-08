@@ -29,7 +29,7 @@ export function queryCriteriaToMongo<T extends { [key: string]: any }>(
   query: T,
   { dateFields, ignore, objectIdFields, fullTextFields, qParameter }: Options = {},
 ): Criteria<T> {
-  const criteria = {} as Criteria<T>
+  const criteria = {} as any
   // check if dateFields is inside fullTExtFields and extend it
   for (const key of Object.keys(query)) {
     if (!ignore || ignore.indexOf(key) === -1 || key === qParameter) {
@@ -39,25 +39,22 @@ export function queryCriteriaToMongo<T extends { [key: string]: any }>(
           throw new Error(`Fulltext search is not enabled for this resource.`)
         }
         criteria.$or = fullTextFields
-          .map(function(field) {
+          .map(function (field) {
             const regexp = regexpTest(query[key])
             let p
             if (regexp && regexp[1].length) {
               const words = regexp[1].split(' ').filter(Boolean)
               if (words.length > 1) {
-                const andArray = words.reduce(
-                  (and, word) => {
-                    const regexpedWord = `/${word}/${regexp[2]}`
-                    const wordP = convertToMongoOperators(field, regexpedWord, {
-                      dateFields,
-                      objectIdFields,
-                    })
-                    if (wordP) {
-                      return and.concat([{ [field]: wordP.value }])
-                    }
-                  },
-                  [] as any,
-                )
+                const andArray = words.reduce((and, word) => {
+                  const regexpedWord = `/${word}/${regexp[2]}`
+                  const wordP = convertToMongoOperators(field, regexpedWord, {
+                    dateFields,
+                    objectIdFields,
+                  })
+                  if (wordP) {
+                    return and.concat([{ [field]: wordP.value }])
+                  }
+                }, [] as any)
                 return { $and: andArray }
               }
             }

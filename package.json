@@ -42,17 +42,17 @@
   "homepage": "https://github.com/fox1t/qs-to-mongo#readme",
   "devDependencies": {
     "@types/node": "~11.13.8",
-    "@types/qs": "~6.5.3",
-    "chokidar-cli": "~1.2.2",
+    "@types/qs": "^6.9.7",
+    "chokidar-cli": "^3.0.0",
     "husky": "~2.1.0",
-    "prettier": "~1.17.0",
-    "rimraf": "~2.6.3",
+    "prettier": "^2.5.1",
+    "rimraf": "^3.0.2",
     "tap": "~13.1.1",
     "tap-mocha-reporter": "~4.0.1",
     "ts-node": "~8.1.0",
-    "tslint": "~5.16.0",
+    "tslint": "^6.1.3",
     "tslint-config-prettier": "~1.18.0",
-    "typescript": "~3.4.5"
+    "typescript": "^4.5.5"
   },
   "files": [
     "/lib",
@@ -67,7 +67,7 @@
     "test": "test"
   },
   "dependencies": {
-    "bson-objectid": "~1.2.4",
-    "qs": "~6.7.0"
+    "bson-objectid": "^2.0.2",
+    "qs": "^6.10.3"
   }
 }
