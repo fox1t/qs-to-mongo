@@ -14,7 +14,7 @@
 
 </div>
 
-With this package you can parse and convert query parameters into [MongoDB](https://www.mongodb.com/) query criteria and options.
+Thanks to this package, you can parse and convert query parameters into [MongoDB](https://www.mongodb.com/) query criteria and options.
 
 ## Install
 `npm install qs-to-mongo`
@@ -125,7 +125,7 @@ This will generate an object that could be used by express [res.links](http://ex
 ```
 
 ### Filtering
-Any query parameters other then the special parameters _fields_, _omit_, _sort_, _offset_, _limit_ and _q_ are interpreted as query criteria. For example `name=john&age>21` results in a _criteria_ value of:
+Any query parameters other than the special parameters _fields_, _omit_, _sort_, _offset_, _limit_, and _q_ are interpreted as query criteria. For example `name=john&age>21` results in a _criteria_ value of:
 
 ```
 {
@@ -135,12 +135,12 @@ Any query parameters other then the special parameters _fields_, _omit_, _sort_,
 ```
 
 * Supports standard comparison operations (=, !=, >, <, >=, <=).
-* Numeric values, where `Number(value) != NaN`, are compared as numbers (ie., `field=10` yields `{field:10}`).
+* Numeric values, where `Number(value) != NaN`, are compared as numbers (i.e., `field=10` yields `{field:10}`).
 * Values of _true_ and _false_ are compared as booleans (ie. `{field: true}`)
 * ObjectId hex strings can be compared as ObjectId instances, if `objectIdFields` is passed.
-* Values that are [dates](http://www.w3.org/TR/NOTE-datetime) are compared as dates (except for YYYY which matches the number rule) if `dateFields` is passed. If not, they will be converted to Date [ISOString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString).
+* Values that are [dates](http://www.w3.org/TR/NOTE-datetime) are compared as dates (except for YYYY, which matches the number rule) if `dateFields` is passed. If not, they will be converted to Date [ISOString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString).
 * `null` values are compared as `null`. For example `bar=null` yields `{bar: null}`
-* special `q` query parameter could be used to perform fulltext search on fields that are passed in `fullTextFields` argument.
+* special `q` query parameter could be used to perform a full-text search on fields passed in the `fullTextFields` argument.
 * Multiple equals comparisons are merged into a `$in` operator. For example, `id=a&id=b` yields `{id:{$in:['a','b']}}`.
 * Multiple not-equals comparisons are merged into a `$nin` operator. For example, `id!=a&id!=b` yields `{id:{$nin:['a','b']}}`.
 * Comma separated values in equals or not-equals yeild an `$in` or `$nin` operator. For example, `id=a,b` yields `{id:{$in:['a','b']}}`.
@@ -148,12 +148,12 @@ Any query parameters other then the special parameters _fields_, _omit_, _sort_,
 * Parameters without a value check that the field is present. For example, `foo&bar=10` yields `{foo: {$exists: true}, bar: 10}`.
 * Parameters prefixed with a _not_ (!) and without a value check that the field is not present. For example, `!foo&bar=10` yields `{foo: {$exists: false}, bar: 10}`.
 * Supports some of the named comparision operators ($type, $size and $all).  For example, `foo:type=string`, yeilds `{ foo: {$type: 'string} }`.
-* Support for forced string comparison; value in single or double quotes (`field='10'` or `field="10"`) would force a string compare. Allows for string with embedded comma (`field="a,b"`) and quotes (`field="that's all folks"`).
+* Support for forced string comparison; value in single or double quotes (`field='10'` or `field="10"`) would force a string compare. Allows for a string with an embedded comma (`field="a,b"`) and quotes (`field="that's all folks"`).
 
 ### Embedded documents
 Comparisons on embedded documents should use mongo's [dot notation](http://docs.mongodb.org/manual/reference/glossary/#term-dot-notation) instead of [qs](https://www.npmjs.com/package/qs) (Use `foo.bar=value` instead of `foo[bar]=value`) 'extended' syntax.
 
-Although exact matches are handled for either method, comparisons (such as `foo[bar]!=value`) are not supported because the `qs` parser expects an equals sign after the nested object reference; if it's not an equals the remainder is discarded.
+Although exact matches are handled for either method, comparisons (such as `foo[bar]!=value`) are not supported because the `qs` parser expects an equals sign after the nested object reference; if it's not an equals, the remainder is discarded.
 
 ### Overriding parameters
 You can adjust the default parameters (_fields_, _omit_, _sort_, _offset_, _limit_ and _q_) by providing an alternate set as an option. For example:
@@ -190,7 +190,7 @@ query.option = {
 
 
 ### Frameworks integration
-This module takes also parsed query as input, so it could be used by [Fastify](https://github.com/fastify/fastify) or [express](https://github.com/expressjs/express) routes without any further addition.
+This module also takes parsed query as input, so that it could be used by [Fastify](https://github.com/fastify/fastify) or [express](https://github.com/expressjs/express) routes without any further addition.
 
 ```typescript
 const querystring = require('querystring')
@@ -215,11 +215,11 @@ router.get('/api/v1/mycollection', function(req, res, next) {
 }
 ```
 
-The format and names for query parameters was inspired by [this article](http://blog.mwaysolutions.com/2014/06/05/10-best-practices-for-better-restful-api/) about best practices for RESTful APIs.
+The format and names for query parameters were inspired by [this article](http://blog.mwaysolutions.com/2014/06/05/10-best-practices-for-better-restful-api/) about best practices for RESTful APIs.
 
 ## Background
 
-This package started as hard fork of  https://github.com/pbatey/query-to-mongo. This is a TypeScript port, with some fixes and many improvements. Because of the changes to the public API, this is not a drop-in replacement.
+This package started as a hard fork of  https://github.com/pbatey/query-to-mongo. This is a TypeScript port, with some fixes and many improvements. However, this is not a drop-in replacement because of the changes to the public API.
 
 ### Notable differences with [query-to-mongo](https://github.com/pbatey/query-to-mongo)
 * uses [qs](https://github.com/ljharb/qs) instead of [querystring](https://nodejs.org/api/querystring.html) for default query parsing
