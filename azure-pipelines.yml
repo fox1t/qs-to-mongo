@@ -33,5 +33,5 @@ steps:
     displayName: "Publish Test Results"
     condition: succeededOrFailed()
     inputs:
-      testResultsFiles: "lcov.info"
+      testResultsFiles: "coverage/lcov.info"
       testRunTitle: TestRun $(node_version)
