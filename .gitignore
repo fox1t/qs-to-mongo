@@ -57,3 +57,4 @@ jspm_packages/
 
 # compiled lib
 dist
+pnpm-lock.yaml
