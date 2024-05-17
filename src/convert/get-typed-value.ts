@@ -14,8 +14,6 @@ function isValidObjectId(id: string | ObjectId): boolean {
   const hexString = id.toString().toLowerCase()
 
   return ObjectId.isValid(hexString) && new ObjectId(hexString).toString() === hexString
-    ? true
-    : false
 }
 
 export const regexpTest = (value: string) => value.match(/^\/(.*)\/(i?)$/)
@@ -26,32 +24,40 @@ export function getTypedValue(
   value: string,
   { parseDate, parseObjectId }: Options = {},
 ): string | number | boolean | RegExp | Date | ObjectId | null {
+  let _value = value
   // if there is a negation operator, removes it beacause it is already handled in convertToMongoOperators function
-  if (value[0] === '!') {
-    value = value.substr(1)
+  if (_value[0] === '!') {
+    _value = _value.substr(1)
   }
-  const regex = regexpTest(value)
-  const quotedString = value.match(/(["'])(?:\\\1|.)*?\1/)
+  const regex = regexpTest(_value)
+  const quotedString = _value.match(/(["'])(?:\\\1|.)*?\1/)
 
   if (regex) {
     return new RegExp(regex[1], regex[2])
-  } else if (quotedString) {
+  }
+  if (quotedString) {
     return quotedString[0].substr(1, quotedString[0].length - 2)
-  } else if (value === 'true') {
+  }
+  if (_value === 'true') {
     return true
-  } else if (value === 'false') {
+  }
+  if (_value === 'false') {
     return false
-  } else if (iso8601.test(value) && value.length !== 4) {
-    return parseDate ? new Date(value) : new Date(value).toISOString()
-  } else if (!isNaN(Number(value))) {
-    return Number(value)
-  } else if (value === 'null') {
+  }
+  if (iso8601.test(_value) && _value.length !== 4) {
+    return parseDate ? new Date(_value) : new Date(_value).toISOString()
+  }
+  if (!Number.isNaN(Number(_value))) {
+    return Number(_value)
+  }
+  if (_value === 'null') {
     return null
-  } else if (isValidObjectId(value)) {
-    return parseObjectId ? new ObjectId(value) : value
+  }
+  if (isValidObjectId(_value)) {
+    return parseObjectId ? new ObjectId(_value) : _value
   }
 
-  return value
+  return _value
 }
 
 // Convert a comma separated string value to an array of values.

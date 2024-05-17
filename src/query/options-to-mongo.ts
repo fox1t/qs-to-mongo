@@ -38,7 +38,7 @@ export function parseQueryOptions(
   query: QueryStringOptions,
   { maxLimit = 9007199254740992, parameters }: Options,
 ): ParsedOptions {
-  const parsedOptions: ParsedOptions = {} as any
+  const parsedOptions = {} as ParsedOptions
   const projection = fieldsToProjection(query[parameters.fields])
   const negativeProjection = omitFieldsToProjection(query[parameters.omit])
   const sort = sortToMongo(query[parameters.sort])
@@ -60,7 +60,7 @@ export function parseQueryOptions(
   }
 
   if (query[parameters.offset]) {
-    const skip = parseInt(query[parameters.offset] as string, 10)
+    const skip = Number.parseInt(query[parameters.offset] as string, 10)
     if (!Number.isInteger(skip) || skip < 0) {
       throw new Error(`'skip' option must be a positive integer.`)
     }
@@ -68,7 +68,7 @@ export function parseQueryOptions(
   }
 
   if (query[parameters.limit]) {
-    const limit = parseInt(query[parameters.limit] as string, 10)
+    const limit = Number.parseInt(query[parameters.limit] as string, 10)
     if (!Number.isInteger(limit)) {
       throw new Error(`'skip' option must be a positive integer.`)
     }

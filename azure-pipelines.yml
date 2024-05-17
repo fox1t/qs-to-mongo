@@ -7,16 +7,12 @@ trigger:
 - master
 
 pool:
-  vmImage: "ubuntu-20.04"
+  vmImage: "ubuntu-22.04"
 
 strategy:
   matrix:
-    node_12_x:
-      node_version: 12.x
-    node_14_x:
-      node_version: 14.x
-    node_16_x:
-      node_version: 16.x
+    node_22_x:
+      node_version: 22.x
 
 steps:
   - task: NodeTool@0
@@ -30,12 +26,12 @@ steps:
   - bash: npm run build
     displayName: Lint and Build TypeScript
 
-  - bash: npm run test:report && npm run test:reporter
+  - bash: npm run test:coverage
     displayName: Test
 
   - task: PublishTestResults@2
     displayName: "Publish Test Results"
     condition: succeededOrFailed()
     inputs:
-      testResultsFiles: "junit-testresults.xml"
+      testResultsFiles: "coverage/lcov.info"
       testRunTitle: TestRun $(node_version)
