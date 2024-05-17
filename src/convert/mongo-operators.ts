@@ -1,4 +1,5 @@
-import { getTypedValues, getTypedValue } from './get-typed-value'
+import type ObjectID from 'bson-objectid'
+import { getTypedValue, getTypedValues } from './get-typed-value'
 
 interface Options {
   dateFields?: string[]
@@ -6,6 +7,20 @@ interface Options {
 }
 
 const operatorsBlackList = ['$where']
+type Value =
+  | string
+  | number
+  | boolean
+  | RegExp
+  | Date
+  | ObjectID
+  | null
+  | Array<string | number | boolean | RegExp | Date | ObjectID | null>
+
+export interface FieldQueryCriteria {
+  key: string
+  value: { [key: string]: Value } | Value | { [key: string]: Value }[]
+}
 
 // Convert a key/value pair split at an equals sign into a mongo comparison.
 // Converts value Strings to Numbers or Booleans when possible.
@@ -18,84 +33,85 @@ const operatorsBlackList = ['$where']
 // + f('key','op:value') => {key: 'key', value:{ $op: value}}
 export function convertToMongoOperators(
   key: string,
-  value: any,
+  value: string,
   { dateFields, objectIdFields }: Options = {},
 ) {
   const join = value === '' ? key : key.concat('=', value)
   const parts = join.match(/^(!?[^><!=:]+)(?:=?([><]=?|!?=|:.+=)(.+))?$/)
-  const fieldQueryCriteria: { key: string; value: any } = {} as any
   let parseDate = false
   let parseObjectId = false
-  let op
 
   if (!parts) {
     return null
   }
 
-  key = parts[1]
-  op = parts[2]
+  let _key = parts[1]
+  let op = parts[2]
+  let _value: FieldQueryCriteria['value'] = {}
 
-  if (Array.isArray(dateFields) && dateFields.indexOf(key) > -1) {
+  if (Array.isArray(dateFields) && dateFields.indexOf(_key) > -1) {
     parseDate = true
   }
-  if (Array.isArray(objectIdFields) && objectIdFields.indexOf(key) > -1) {
+  if (Array.isArray(objectIdFields) && objectIdFields.indexOf(_key) > -1) {
     parseObjectId = true
   }
 
   if (!op) {
-    if (key[0] !== '!') {
-      value = { $exists: true }
+    if (_key[0] !== '!') {
+      _value = { $exists: true }
     } else {
-      key = key.substr(1)
-      value = { $exists: false }
+      _key = _key.substr(1)
+      _value = { $exists: false }
     }
   } else if (op === '=' && parts[3] === '!') {
-    value = { $exists: false }
+    _value = { $exists: false }
   } else if (op === '=' || op === '!=') {
     if (op === '=' && parts[3][0] === '!') {
       op = '!='
     }
-    const array: any[] = getTypedValues(parts[3], { parseDate, parseObjectId })
+    const array = getTypedValues(parts[3], { parseDate, parseObjectId })
 
     if (array.length > 1) {
-      value = {}
+      _value = {}
       op = op === '=' ? '$in' : '$nin'
-      value[op] = array
+      _value[op] = array
     } else if (op === '!=') {
       // for a RegExp we need to use $not operator
       // it supports only single value after ! and not an array
-      value = array[0] instanceof RegExp ? { $not: array[0] } : { $ne: array[0] }
+      _value = array[0] instanceof RegExp ? { $not: array[0] } : { $ne: array[0] }
     } else {
-      value = array[0]
+      _value = array[0]
     }
   } else if (op[0] === ':' && op[op.length - 1] === '=') {
     // f('key:op','value')
-    op = '$' + op.substr(1, op.length - 2)
+    op = `$${op.substr(1, op.length - 2)}`
     if (operatorsBlackList.indexOf(op) > -1) {
       throw new Error(`Use of the operator ${op} is forbidden to prevent NoSQL injections.`)
     }
     const array = parts[3].split(',').map(val => getTypedValue(val, { parseDate, parseObjectId }))
     if (op === '$or') {
-      value = array.length === 1 ? { [key]: array[0] } : array.map(val => ({ [key]: val }))
-      key = op
+      _value = array.length === 1 ? { [_key]: array[0] } : array.map(val => ({ [_key]: val }))
+      _key = op
     } else {
-      value = {}
-      value[op] = array.length === 1 ? array[0] : array
+      _value = {}
+      _value[op] = array.length === 1 ? array[0] : array
     }
   } else {
-    value = getTypedValue(parts[3], { parseDate, parseObjectId })
+    const typedValue = getTypedValue(parts[3], { parseDate, parseObjectId })
     if (op === '>') {
-      value = { $gt: value }
+      _value = { $gt: typedValue }
     } else if (op === '>=') {
-      value = { $gte: value }
+      _value = { $gte: typedValue }
     } else if (op === '<') {
-      value = { $lt: value }
+      _value = { $lt: typedValue }
     } else if (op === '<=') {
-      value = { $lte: value }
+      _value = { $lte: typedValue }
     }
   }
 
-  fieldQueryCriteria.key = key
-  fieldQueryCriteria.value = value
+  const fieldQueryCriteria: FieldQueryCriteria = {
+    key: _key,
+    value: _value,
+  }
   return fieldQueryCriteria
 }

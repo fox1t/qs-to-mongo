@@ -1,92 +1,64 @@
-import { test } from 'tap'
+import { equal } from 'node:assert/strict'
+import { test } from 'node:test'
+
 import qs2m from '../src'
 
-test('query-to-mongo(query).links =>', function(t) {
-  t.test('#links', function(t2) {
-    const links = qs2m('offset=20&limit=10').links('http://localhost', 95)
-    t2.test('should create first link', function(t3) {
-      t3.ok(links)
-      t3.equal(links!.first, 'http://localhost?offset=0&limit=10')
-      t3.end()
-    })
-    t2.test('should create prev link', function(t3) {
-      t3.ok(links)
-      t3.equal(links!.prev, 'http://localhost?offset=10&limit=10')
-      t3.end()
-    })
-    t2.test('should create next link', function(t3) {
-      t3.ok(links)
-      t3.equal(links!.next, 'http://localhost?offset=30&limit=10')
-      t3.end()
-    })
-    t2.test('should create last link', function(t3) {
-      t3.ok(links)
-      t3.equal(links!.last, 'http://localhost?offset=90&limit=10')
-      t3.end()
-    })
-
-    t2.test('should return null if totalCount equals 0', function(t3) {
-      const links2 = qs2m('offset=20&limit=10').links('http://localhost', 0)
-      t3.equal(links2, null)
-      t3.end()
-    })
-    t2.test('with no pages', function(t3) {
-      const links2 = qs2m('offset=0&limit=100').links('http://localhost', 95)
-      t3.test('should not create links', function(t4) {
-        t4.notOk(links2!.first)
-        t4.notOk(links2!.last)
-        t4.notOk(links2!.next)
-        t4.notOk(links2!.prev)
-        t4.end()
-      })
-      t3.end()
-    })
-    t2.test('when on first page', function(t3) {
-      const links2 = qs2m('offset=0&limit=10').links('http://localhost', 95)
-      t3.test('should not create prev link', function(t4) {
-        t4.ok(links2)
-        t4.notOk(links2!.prev)
-        t4.end()
-      })
-      t3.test('should not create first link', function(t4) {
-        t4.ok(links2)
-        t4.notOk(links2!.first)
-        t4.end()
-      })
-      t3.test('should create next link', function(t4) {
-        t4.ok(links2)
-        t4.equal(links2!.next, 'http://localhost?offset=10&limit=10')
-        t4.end()
-      })
-      t3.test('should create last link', function(t4) {
-        t4.ok(links2)
-        t4.equal(links2!.last, 'http://localhost?offset=90&limit=10')
-        t4.end()
-      })
-      t3.end()
-    })
-    t2.test('when on last page', function(t3) {
-      const links2 = qs2m('offset=90&limit=10').links('http://localhost', 95)
-      t3.test('should not create next link', function(t4) {
-        t4.ok(links2)
-        t4.notOk(links2!.next)
-        t4.end()
-      })
-      t3.test('should not create last link', function(t4) {
-        t4.notOk(links2!.last)
-        t4.end()
-      })
-      t3.test('should create prev link', function(t4) {
-        t4.equal(links2!.prev, 'http://localhost?offset=80&limit=10')
-        t4.end()
-      })
-      t3.test('should not create first link', function(t4) {
-        t4.equal(links2!.first, 'http://localhost?offset=0&limit=10')
-        t4.end()
-      })
-      t3.end()
-    })
-    t2.end()
+test('query-to-mongo(query).links =>', async t => {
+  const links = qs2m('offset=20&limit=10').links('http://localhost', 95)
+  await t.test('should create first link', t3 => {
+    equal(links?.first, 'http://localhost?offset=0&limit=10')
   })
-  t.end()
+  await t.test('should create prev link', t3 => {
+    equal(links?.prev, 'http://localhost?offset=10&limit=10')
+  })
+  await t.test('should create next link', t3 => {
+    equal(links?.next, 'http://localhost?offset=30&limit=10')
+  })
+  await t.test('should create last link', t3 => {
+    equal(links?.last, 'http://localhost?offset=90&limit=10')
+  })
+
+  await t.test('should return null if totalCount equals 0', () => {
+    const links2 = qs2m('offset=20&limit=10').links('http://localhost', 0)
+    equal(links2, null)
+  })
+  await t.test('with no pages', async t1 => {
+    const links2 = qs2m('offset=0&limit=100').links('http://localhost', 95)
+    await t1.test('should not create links', t4 => {
+      equal(links2?.first, undefined)
+      equal(links2?.last, undefined)
+      equal(links2?.next, undefined)
+      equal(links2?.prev, undefined)
+    })
+  })
+  await t.test('when on first page', async t1 => {
+    const links2 = qs2m('offset=0&limit=10').links('http://localhost', 95)
+    await t1.test('should not create prev link', () => {
+      equal(links2?.prev, undefined)
+    })
+    await t1.test('should not create first link', () => {
+      equal(links2?.first, undefined)
+    })
+    await t1.test('should create next link', () => {
+      equal(links2?.next, 'http://localhost?offset=10&limit=10')
+    })
+    await t1.test('should create last link', () => {
+      equal(links2?.last, 'http://localhost?offset=90&limit=10')
+    })
+  })
+  await t.test('when on last page', async t1 => {
+    const links2 = qs2m('offset=90&limit=10').links('http://localhost', 95)
+    await t1.test('should not create next link', t4 => {
+      equal(links2?.next, undefined)
+    })
+    await t1.test('should not create last link', t4 => {
+      equal(links2?.last, undefined)
+    })
+    await t1.test('should create prev link', t4 => {
+      equal(links2?.prev, 'http://localhost?offset=80&limit=10')
+    })
+    await t1.test('should not create first link', t4 => {
+      equal(links2?.first, 'http://localhost?offset=0&limit=10')
+    })
+  })
 })

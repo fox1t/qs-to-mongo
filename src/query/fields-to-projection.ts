@@ -5,8 +5,7 @@ interface Projection {
 // Convert comma separated list to a mongo projection.
 // for example f('field1,field2,field3') -> {field1:1,field2:1,field3:1}
 // if the field4 starts with '-' char it will be omitted instead -> {field4: 0}
-
-export function fieldsToProjection<T>(fields: T): T extends string | string[] ? Projection : null {
+export function fieldsToProjection<T>(fields: T): Projection | null {
   let fieldsArray: string[]
 
   if (Array.isArray(fields)) {
@@ -14,16 +13,17 @@ export function fieldsToProjection<T>(fields: T): T extends string | string[] ? 
   } else if (typeof fields === 'string') {
     fieldsArray = fields.split(',')
   } else {
-    return null as any
+    return null
   }
 
-  return fieldsArray.reduce((hash: any, field: string) => {
+  return fieldsArray.reduce((hash: Projection, field: string) => {
     let project: 0 | 1 = 1
-    if (field.startsWith('-')) {
-      field = field.substr(1)
+    let _field = field
+    if (_field.startsWith('-')) {
+      _field = _field.substr(1)
       project = 0
     }
-    hash[field.trim()] = project
+    hash[_field.trim()] = project
     return hash
   }, {})
 }
