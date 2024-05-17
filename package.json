@@ -1,6 +1,6 @@
 {
   "name": "qs-to-mongo",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "Convert query string parameters into mongo query filter and options.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -55,7 +55,10 @@
     "tsx": "^4.10.4",
     "typescript": "^5.4.5"
   },
-  "files": ["/lib", "/typings"],
+  "files": [
+    "/lib",
+    "/typings"
+  ],
   "husky": {
     "hooks": {
       "pre-commit": "npm run test && npm run build"
