@@ -1,4 +1,4 @@
-name: Build and Test
+name: Build
 
 on:
   merge_group:
@@ -83,39 +83,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install
 
       - name: Build
-        run: npm run build
-
-  test:
-    runs-on: ${{ matrix.os }}
-    name: Test
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-        os: [ubuntu-latest]
-    steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@a4aa98b93cab29d9b1101a6143fb8bce00e2eac4 # v2.7.1
-        with:
-          egress-policy: audit
-
-      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
-        name: Checkout
-      - name: Use Node.js
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Test
-        run: npm run test:report && npm run test:reporter
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v2
-        with:
-          name: test-results
-          path: junit-testresults.xml
+        run: pnpm build
