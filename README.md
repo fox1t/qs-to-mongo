@@ -6,6 +6,8 @@
 
 <div align="center">
 
+[![Build](https://github.com/matteovivona/qs-to-mongo/actions/workflows/build.yaml/badge.svg)](https://github.com/matteovivona/qs-to-mongo/actions/workflows/build.yaml)
+[![Test](https://github.com/matteovivona/qs-to-mongo/actions/workflows/test.yaml/badge.svg)](https://github.com/matteovivona/qs-to-mongo/actions/workflows/test.yaml)
 [![NPM version](https://img.shields.io/npm/v/qs-to-mongo.svg?style=flat)](https://www.npmjs.com/package/qs-to-mongo)
 [![NPM downloads](https://img.shields.io/npm/dm/qs-to-mongo.svg?style=flat)](https://www.npmjs.com/package/qs-to-mongo)
 [![built with typescript-lib-starter](https://img.shields.io/badge/built%20with-typescript--lib--starter%20-blue.svg)](https://github.com/fox1t/typescript-lib-starter)
