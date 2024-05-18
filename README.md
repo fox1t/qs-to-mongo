@@ -6,7 +6,6 @@
 
 <div align="center">
 
-[![Build Status](https://dev.azure.com/sinik/qs-to-mongo/_apis/build/status/fox1t.qs-to-mongo?branchName=master)](https://dev.azure.com/sinik/qs-to-mongo/_build/latest?definitionId=1&branchName=master)
 [![NPM version](https://img.shields.io/npm/v/qs-to-mongo.svg?style=flat)](https://www.npmjs.com/package/qs-to-mongo)
 [![NPM downloads](https://img.shields.io/npm/dm/qs-to-mongo.svg?style=flat)](https://www.npmjs.com/package/qs-to-mongo)
 [![built with typescript-lib-starter](https://img.shields.io/badge/built%20with-typescript--lib--starter%20-blue.svg)](https://github.com/fox1t/typescript-lib-starter)
