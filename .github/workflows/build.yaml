@@ -14,7 +14,7 @@ permissions: read-all
 jobs:
   install:
     runs-on: ${{ matrix.os }}
-    name: Install
+    name: Install on clean repro
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
@@ -48,19 +48,6 @@ jobs:
           cd yarn-repro
           npm init -y
           yarn add qs-to-mongo
-
-      - uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
-        name: Install pnpm
-        with:
-          version: 8
-
-      - name: Install with pnpm
-        run: |
-          cd ${{ github.workspace }}
-          mkdir pnpm-repro
-          cd pnpm-repro
-          pnpm init -y
-          pnpm add qs-to-mongo
 
   build:
     runs-on: ${{ matrix.os }}
