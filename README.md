@@ -1,5 +1,5 @@
 <div align="center">
-  
+
 ![qs-to-mongo-logo-v1](https://user-images.githubusercontent.com/6388707/57569044-0f723900-73f0-11e9-8683-b28afd0b7731.png)
 
 </div>
@@ -41,7 +41,7 @@ The result will be
 }
 ```
 
-Resulting object props (`criteria` and `options`) are usable as parameters to any MongoDB package. For example:
+Resulting object props (`criteria` and `options`) are usable as parameters for any MongoDB driver or ODM. For example:
 ```typescript
 import qs2m from 'qs-to-mongo'
 import { MongoClient } from 'mongodb'
@@ -76,14 +76,14 @@ qs2m(query: string, options: {
 ```
 
 ### Options
-* ignoredFields: array of query parameters that are ignored, in addtion to defalut ones: "fields", "omit", "sort", "offset", "limit", "q";
-* parser: custom query parser, must implement `parse(query: string, options?: any): any` and `stringify(obj: object, options?: any): string`. The default parser is [qs](https://github.com/ljharb/qs);
-* parserOptions: options to pass to the query parser;
-* dateFields: fields that will be converted to `Date`. If no fields are passed, any valid date string will be converted to [ISOString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString);
-* objectIdFields: fields that will be converted to [ObjectId](https://docs.mongodb.com/manual/reference/method/ObjectId/);
-* fullTextFields: fields that will be used as criteria when passing `q` query parameter;
-* parameters: override default parameters used as query options ("fields", "omit", "sort", "offset", "limit", "q"). For example: {fields:'$fields', omit:'$omit', sort:'$sort', offset:'$offset', limit:'$limit'};
-* maxLimit: maximum limit that could be passed to `limit` option.
+* `ignoredFields`: array of query parameters that are ignored, in addition to default ones: "fields", "omit", "sort", "offset", "limit", "q";
+* `parser`: custom query parser, must implement `parse(query: string, options?: any): any` and `stringify(obj: object, options?: any): string`. The default parser is [qs](https://github.com/ljharb/qs);
+* `parserOptions`: options to pass to the query parser;
+* `dateFields`: fields that will be converted to `Date`. If no fields are passed, any valid date string will be converted to [ISOString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString);
+* `objectIdFields`: fields that will be converted to [ObjectId](https://docs.mongodb.com/manual/reference/method/ObjectId/);
+* `fullTextFields`: fields that will be used as criteria when passing the `q` query parameter;
+* `parameters`: override default parameters used as query options ("fields", "omit", "sort", "offset", "limit", "q"). For example: {fields:'$fields', omit:'$omit', sort:'$sort', offset:'$offset', limit:'$limit'};
+* `maxLimit`: maximum limit that could be passed to the `limit` option.
 
 ### Returned object
 
@@ -117,7 +117,7 @@ import qs2m from 'qs-to-mongo' //or const qs2m = require('qs-to-mongo')
 const query = qs2m('name=john&age>21&offset=20&limit=10')
 query.links('http://localhost/api/v1/users', 100)
 ```
-This will generate an object that could be used by express [res.links](http://expressjs.com/en/4x/api.html#res.links) method.
+This will generate an object that could be used by the Express [res.](http://expressjs.com/en/4x/api.html#res.links)links(http://expressjs.com/en/4x/api.html#res.links) method.
 ```typescript
 { prev: 'http://localhost/api/v1/users?name=john&age%3E21=&offset=10&limit=10',
   first: 'http://localhost/api/v1/users?name=john&age%3E21=&offset=0&limit=10',
@@ -138,17 +138,17 @@ Any query parameters other than the special parameters _fields_, _omit_, _sort_,
 * Supports standard comparison operations (=, !=, >, <, >=, <=).
 * Numeric values, where `Number(value) != NaN`, are compared as numbers (i.e., `field=10` yields `{field:10}`).
 * Values of _true_ and _false_ are compared as booleans (ie. `{field: true}`)
-* ObjectId hex strings can be compared as ObjectId instances, if `objectIdFields` is passed.
+* ObjectId hex strings can be compared as ObjectId instances if `objectIdFields`` is passed.
 * Values that are [dates](http://www.w3.org/TR/NOTE-datetime) are compared as dates (except for YYYY, which matches the number rule) if `dateFields` is passed. If not, they will be converted to Date [ISOString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString).
 * `null` values are compared as `null`. For example `bar=null` yields `{bar: null}`
 * special `q` query parameter could be used to perform a full-text search on fields passed in the `fullTextFields` argument.
 * Multiple equals comparisons are merged into a `$in` operator. For example, `id=a&id=b` yields `{id:{$in:['a','b']}}`.
 * Multiple not-equals comparisons are merged into a `$nin` operator. For example, `id!=a&id!=b` yields `{id:{$nin:['a','b']}}`.
-* Comma separated values in equals or not-equals yeild an `$in` or `$nin` operator. For example, `id=a,b` yields `{id:{$in:['a','b']}}`.
+Comma-separated values in equals or not-equals yield an `$`in` or `$nin` operator. For example, `id=a,b` yields `{id:{$in:['a','b']}}`.
 * Regex patterns. For example, `name=/^john/i` yields `{id: /^john/i}`.
 * Parameters without a value check that the field is present. For example, `foo&bar=10` yields `{foo: {$exists: true}, bar: 10}`.
 * Parameters prefixed with a _not_ (!) and without a value check that the field is not present. For example, `!foo&bar=10` yields `{foo: {$exists: false}, bar: 10}`.
-* Supports some of the named comparision operators ($type, $size and $all).  For example, `foo:type=string`, yeilds `{ foo: {$type: 'string} }`.
+* Supports some of the named comparison operators ($type, $size and $all).  For example, `foo:type=string`, yeilds `{ foo: {$type: 'string} }`.
 * Support for forced string comparison; value in single or double quotes (`field='10'` or `field="10"`) would force a string compare. Allows for a string with an embedded comma (`field="a,b"`) and quotes (`field="that's all folks"`).
 
 ### Embedded documents
@@ -216,7 +216,7 @@ router.get('/api/v1/mycollection', function(req, res, next) {
 }
 ```
 
-The format and names for query parameters were inspired by [this article](http://blog.mwaysolutions.com/2014/06/05/10-best-practices-for-better-restful-api/) about best practices for RESTful APIs.
+The format and names for query parameters were inspired by [this article](https://web.archive.org/web/20190117150929/http://blog.mwaysolutions.com/2014/06/05/10-best-practices-for-better-restful-api/) about best practices for RESTful APIs.
 
 ## Background
 
